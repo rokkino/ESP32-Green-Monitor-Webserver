@@ -1,0 +1,563 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="A layout example with a side menu that hides on mobile, just like the Pure website.">
+  <title>Green Monitor</title>
+  <link rel="stylesheet" href="pure-min.css">
+  <link rel="stylesheet" href="style.css">
+ </head>
+ 
+ <body>
+   <div class="time-row">
+    <div id="datetime" class="time-info">Loading...</div>
+    <div id="timezone" class="time-info">Loading...</div>
+  </div>
+  <div id="layout">
+    <!-- Menu toggle -->
+    <a href="#menu" id="menuLink" class="menu-link">
+        <!-- Hamburger icon -->
+        <span></span>
+    </a>
+
+    <div id="menu">
+        <div class="pure-menu">
+            <a class="pure-menu-heading">Menu'</a>
+
+            <ul class="pure-menu-list">
+                <li class="pure-menu-item"><a href="overview.html" class="pure-menu-link">Overview</a></li>
+                <li class="pure-menu-item"><a href="functions.html" class="pure-menu-link">Functions</a></li>
+                <li class="pure-menu-item"><a href="settings.html" class="pure-menu-link">Settings</a></li>
+                <li class="pure-menu-item"><a href="about.html" class="pure-menu-link">About</a></li>
+
+            </ul>
+        </div>
+    </div>
+</div>
+  <style>
+    .time-row {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      background-color: #f2f2f2;
+      padding: 10px;
+      margin-bottom: 10px;
+    }
+    
+    .time-info {
+      font-size: 18px;
+    }
+    
+    .table-container {
+      margin-top: 50px;
+      margin-bottom: 50px;
+    }
+    
+    .pure-table {
+      width: 100%;
+    }
+    
+    .timer-row {
+      background-color: #f2f2f2;
+      padding: 10px;
+    }
+    
+    .timer-set {
+      font-weight: bold;
+    }
+  </style>
+  
+    <script>
+        // Get the current page URL
+        var currentPage = window.location.href;
+    
+        // Select the menu items
+        var menuItems = document.querySelectorAll('.pure-menu-link');
+    
+        // Loop through the menu items
+        menuItems.forEach(function(menuItem) {
+            // Check if the menu item's href matches the current page URL
+            if (menuItem.href === currentPage) {
+                // Add the 'pure-menu-selected' class to the matching menu item
+                menuItem.parentNode.classList.add('pure-menu-selected');
+            }
+        });
+    </script>
+    <div id="main">
+        <div class="header">
+            <style>.header{margin-bottom:-10px;}</style>
+        </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Function to update the date and time
+  function updateDateTime() {
+    // Make an HTTP GET request to the WorldTimeAPI endpoint
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', 'http://worldtimeapi.org/api/ip', true);
+
+    xhr.onload = function() {
+      if (xhr.status === 200) {
+        var response = JSON.parse(xhr.responseText);
+
+        // Extract the time data from the response
+        var datetime = response.datetime;
+
+        // Separate the date and time
+        var dateTimeParts = datetime.split('T');
+        var date = dateTimeParts[0];
+        var time = dateTimeParts[1].split('.')[0]; // Extract time without milliseconds
+        // Format the datetime string
+        var formattedDatetime = date + ' ' + time;
+
+        // Update the HTML elements with the time data
+        document.getElementById('datetime').textContent = 'Current time: ' + formattedDatetime;
+
+        document.getElementById('timezone').textContent = 'Timezone: ' + response.timezone;
+      }
+    };
+
+    xhr.send();
+  }
+
+  // Call the updateDateTime function immediately
+  updateDateTime();
+
+  // Update the date and time every second
+  setInterval(updateDateTime, 1000);
+});
+
+
+
+</script>
+<div class="table-container">
+
+       <table class="pure-table">
+        <thead>
+            <tr>
+               
+                <th>Device</th>
+                <th>Data</th>
+                <th>Switch</th>
+                <th>Timer</th>
+
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+
+ <td>Water Pump</td>
+<td>Pin 14</td>
+<td>
+    <div class="pure-button-group" role="group" aria-label="...">
+        <button id="button1" class="pure-button pure-button-primary">OFF</button>
+        <button id="button2" class="pure-button">ON</button>
+    </div>
+</td>
+      <td>
+        <input type="time" class="timer-input">
+        <select class="timer-state">
+          <option value="on">On</option>
+          <option value="off">Off</option>
+        </select>
+    <button class="timer-button pure-button" data-device="Water Pump">Set Timer</button>
+
+      </td>
+<script>
+    var button1 = document.getElementById('button1');
+    var button2 = document.getElementById('button2');
+
+    button1.addEventListener('click', function() {
+        toggleButtonStyle(button1, button2);
+        turnOffWaterpump();
+    });
+
+    button2.addEventListener('click', function() {
+        toggleButtonStyle(button2, button1);
+        turnOnWaterpump();
+    });
+
+    function toggleButtonStyle(buttonToToggle, buttonToUntoggle) {
+        buttonToToggle.classList.add('pure-button-primary');
+        buttonToUntoggle.classList.remove('pure-button-primary');
+    }
+
+    function turnOnWaterpump() {
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", "/waterpumpon", true);
+        xhr.send();
+    }
+
+    function turnOffWaterpump() {
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", "/waterpumpoff", true);
+        xhr.send();
+    }
+
+    function checkWaterpumpStatus() {
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", "/checkdevice", true);
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+                var response = JSON.parse(xhr.responseText);
+                var statuswaterpump14 = response.statuswaterpump14;
+                if (statuswaterpump14 === 1) {
+                    toggleButtonStyle(button2, button1);
+                } else {
+                    toggleButtonStyle(button1, button2);
+                }
+            }
+        };
+        xhr.send();
+    }
+
+    // Check Water pump status when the page is loaded
+    document.addEventListener('DOMContentLoaded', function() {
+        checkWaterpumpStatus();
+    });
+</script>
+
+
+                </div></td>
+            </tr>
+            <tr>
+
+ <td>Humidity</td>
+<td>Pin 15</td>
+<td>
+    <div class="pure-button-group" role="group" aria-label="...">
+        <button id="button3" class="pure-button pure-button-primary">OFF</button>
+        <button id="button4" class="pure-button">ON</button>
+    </div>
+</td>
+      <td>
+        <input type="time" class="timer-input">
+        <select class="timer-state">
+          <option value="on">On</option>
+          <option value="off">Off</option>
+        </select>
+    <button class="timer-button pure-button" data-device="Humidity Sensor">Set Timer</button>
+      </td>
+
+
+<script>
+    var button3 = document.getElementById('button3');
+    var button4 = document.getElementById('button4');
+
+    button3.addEventListener('click', function() {
+        toggleButtonStyle(button3, button4);
+        turnOffHumiditySensor();
+    });
+
+    button4.addEventListener('click', function() {
+        toggleButtonStyle(button4, button3);
+        turnOnHumiditySensor();
+    });
+
+    function toggleButtonStyle(buttonToToggle, buttonToUntoggle) {
+        buttonToToggle.classList.add('pure-button-primary');
+        buttonToUntoggle.classList.remove('pure-button-primary');
+    }
+
+    function turnOnHumiditySensor() {
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", "/humidity15_On", true);
+        xhr.send();
+    }
+
+    function turnOffHumiditySensor() {
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", "/humidity15_Off", true);
+        xhr.send();
+    }
+
+    function checkHumiditySensorStatus() {
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", "/checkdevice", true);
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+                var response = JSON.parse(xhr.responseText);
+                var statushumidity15 = response.statushumidity15;
+                if (statushumidity15 === 1) {
+                    toggleButtonStyle(button4, button3);
+                } else {
+                    toggleButtonStyle(button3, button4);
+                }
+            }
+        };
+        xhr.send();
+    }
+
+    // Check Humidity sensor status when the page is loaded
+    document.addEventListener('DOMContentLoaded', function() {
+        checkHumiditySensorStatus();
+    });
+</script>
+
+                        </script>
+                      </div>
+                      
+                </div></td>
+            </tr>
+            <tr>
+
+<td>LED test</td>
+<td>Pin 16</td>
+<td>
+  <div class="pure-button-group" role="group" aria-label="...">
+    <button id="button5" class="pure-button pure-button-primary">OFF</button>
+    <button id="button6" class="pure-button">ON</button>
+  </div>
+</td>
+      <td>
+        <input type="time" class="timer-input">
+        <select class="timer-state">
+          <option value="on">On</option>
+          <option value="off">Off</option>
+        </select>
+    <button class="timer-button pure-button" data-device="LED test">Set Timer</button>
+      </td>
+
+<script>
+var button5 = document.getElementById('button5');
+var button6 = document.getElementById('button6');
+
+// Check LED status when the page is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    checkLEDStatus();
+});
+
+button5.addEventListener('click', function() {
+    toggleButtonStyle(button5, button6);
+    turnOffLED();
+});
+
+button6.addEventListener('click', function() {
+    toggleButtonStyle(button6, button5);
+    turnOnLED();
+});
+
+function toggleButtonStyle(buttonToToggle, buttonToUntoggle) {
+    buttonToToggle.classList.add('pure-button-primary');
+    buttonToUntoggle.classList.remove('pure-button-primary');
+}
+
+function turnOnLED() {
+    var xhr = new XMLHttpRequest();
+    xhr.open("GET", "/ledon", true);
+    xhr.send();
+}
+
+function turnOffLED() {
+    var xhr = new XMLHttpRequest();
+    xhr.open("GET", "/ledoff", true);
+    xhr.send();
+}
+
+function checkLEDStatus() {
+    var xhr = new XMLHttpRequest();
+    xhr.open("GET", "/checkdevice", true);
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+            var response = JSON.parse(xhr.responseText);
+            var statusled16 = response.statusled16; // Corrected variable name
+            if (statusled16 === 1) {
+                toggleButtonStyle(button6, button5);
+            } else {
+                toggleButtonStyle(button5, button6);
+            }
+        }
+    };
+    xhr.send();
+}
+    // Check led sensor status when the page is loaded
+    document.addEventListener('DOMContentLoaded', function() {
+        checkLEDStatus();
+    });
+
+</script>
+<script>
+// Add event listeners for timer buttons in each row
+var timerButtons = document.getElementsByClassName('timer-button');
+for (var i = 0; i < timerButtons.length; i++) {
+  timerButtons[i].addEventListener('click', function() {
+    var row = this.parentNode.parentNode;
+    var timerInput = row.querySelector('.timer-input');
+    var timerState = row.querySelector('.timer-state');
+    var time = timerInput.value;
+    var state = timerState.value;
+    var deviceName = this.dataset.device; // Get the device name from the data attribute
+
+    if (time) {
+      startTimer(time, state, deviceName); // Pass the device name to the startTimer function
+
+      timerInput.value = '';
+
+      // Create the payload for the GET request
+      var url = '/devicetimer?device=' + deviceName + '&time=' + time + '&state=' + state;
+
+      // Make a GET request to the /devicetimer endpoint using fetch
+      fetch(url)
+        .then(response => {
+          if (response.ok) {
+            // Request was successful
+            console.log('Timer set successfully');
+            // Refresh the page or update the timer list if needed
+            // Example: window.location.reload();
+          } else {
+            // Request encountered an error
+            console.log('Error setting timer');
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+        });
+    }
+  });
+}
+
+function startTimer(time, state, deviceName) {
+  // Implement timer logic here for the specified device
+  // You can use the provided time, state, and deviceName values to control the timer
+  // Example: make an AJAX request to set the timer for the device
+  // Extract hours and minutes from the time input
+  var [hours, minutes] = time.split(':');
+  // Determine whether it's AM or PM
+  var period = hours < 12 ? 'AM' : 'PM';
+  // Convert hours to 12-hour format
+  hours = hours % 12 || 12;
+  // Format the time with AM/PM indicator
+  var formattedTime = hours + ':' + minutes + ' ' + period;
+
+  // Update the table to display the device name, switch state, and time
+  var table = document.getElementById('timerInfoTable');
+  var tbody = table.getElementsByTagName('tbody')[0];
+  var newRow = document.createElement('tr');
+
+  var deviceNameCell = document.createElement('td');
+  deviceNameCell.textContent = deviceName;
+  newRow.appendChild(deviceNameCell);
+
+  var switchStateCell = document.createElement('td');
+  switchStateCell.textContent = state;
+  newRow.appendChild(switchStateCell);
+
+  var timeCell = document.createElement('td');
+  timeCell.textContent = formattedTime; // Use the formatted time instead of the original input time
+  newRow.appendChild(timeCell);
+
+  tbody.appendChild(newRow);
+
+  // Create the payload for the POST request
+  var payload = {
+    device: deviceName,
+    state: state,
+    time: time
+  };
+
+  // Make a POST request to the server endpoint using fetch
+  fetch('/devicetimerpost', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(payload)
+  })
+    .then(response => {
+      if (response.ok) {
+        // Request was successful
+        console.log('Timer added successfully', payload);
+      } else {
+        // Request encountered an error
+        console.log('Error adding timer');
+      }
+    })
+    .catch(error => {
+      console.error('Error:', error);
+    });
+}
+
+// Fetch and display the saved timers when the page is loaded
+document.addEventListener('DOMContentLoaded', function() {
+  fetchSavedTimers(); // Fetch the saved timers
+});
+
+// Fetch and display the saved timers when the page is loaded
+document.addEventListener('DOMContentLoaded', function() {
+  fetchSavedTimers(); // Fetch the saved timers
+});
+
+function fetchSavedTimers() {
+  fetch('/devicetimerget')
+    .then(response => {
+      if (response.ok) {
+        return response.json();
+      } else {
+        throw new Error('Error fetching timers');
+      }
+    })
+    .then(data => {
+      console.log('Timer data:', data); // Log the received timer data
+      var timerInfoTable = document.getElementById('timerInfoTable');
+      var tbody = timerInfoTable.getElementsByTagName('tbody')[0];
+
+      // Iterate over the timer data and create table rows
+      for (var i = 0; i < data.length; i++) {
+        var timerData = data[i];
+
+        var newRow = document.createElement('tr');
+
+        var deviceNameCell = document.createElement('td');
+        deviceNameCell.textContent = timerData.device;
+        newRow.appendChild(deviceNameCell);
+
+        var switchStateCell = document.createElement('td');
+        switchStateCell.textContent = timerData.state;
+        newRow.appendChild(switchStateCell);
+
+        var timeCell = document.createElement('td');
+        timeCell.textContent = timerData.time;
+        newRow.appendChild(timeCell);
+
+        tbody.appendChild(newRow);
+      }
+    })
+    .catch(error => {
+      console.error('Error:', error);
+    });
+}
+
+
+</script>
+<!-- Table to display device and timer information -->
+<div class="table-container">
+  <table id="timerInfoTable" class="pure-table">
+    <thead>
+      <tr>
+        <th>Device</th>
+        <th>Switch</th>
+        <th>Time</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Timer information rows will be dynamically added here -->
+    </tbody>
+  </table>
+</div>
+<style>
+  .table-container {
+    margin-top: 50px;
+    margin-bottom: 50px;
+  }
+
+  .pure-table {
+    width: 100%;
+  }
+</style>
+
+       
+<script src="ui.js"></script>
+
+</body>
+</html>

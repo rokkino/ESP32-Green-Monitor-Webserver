@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Green Monitor</title>
+    <link rel="stylesheet" href="pure-min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div id="layout">
+        <!-- Menu toggle -->
+        <a href="#menu" id="menuLink" class="menu-link">
+            <!-- Hamburger icon -->
+            <span></span>
+        </a>
+    
+        <div id="menu">
+            <div class="pure-menu">
+                <a class="pure-menu-heading">Menu'</a>
+    
+                <ul class="pure-menu-list">
+                    <li class="pure-menu-item"><a href="overview.html".html" class="pure-menu-link">Overview</a></li>
+                    <li class="pure-menu-item"><a href="functions.html" class="pure-menu-link">Functions</a></li>
+                    <li class="pure-menu-item"><a href="settings.html" class="pure-menu-link">Settings</a></li>
+                    <li class="pure-menu-item"><a href="about.html" class="pure-menu-link">About</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Get the current page URL
+        var currentPage = window.location.href;
+    
+        // Select the menu items
+        var menuItems = document.querySelectorAll('.pure-menu-link');
+    
+        // Loop through the menu items
+        menuItems.forEach(function(menuItem) {
+            // Check if the menu item's href matches the current page URL
+            if (menuItem.href === currentPage) {
+                // Add the 'pure-menu-selected' class to the matching menu item
+                menuItem.parentNode.classList.add('pure-menu-selected');
+            }
+        });
+    </script>
+    <div id="main">
+        <div class="header">
+            <h1>About me</h1>
+            <h2>Rocca Gianluca</h2>
+<style>
+.column-container {
+  display: flex;
+}
+
+.column {
+  flex: 1;
+  padding: 10px;
+}
+
+.column h3 {
+  margin-top: 0;
+}
+
+.column h4 {
+  margin-bottom: 5px;
+}
+
+.column a {
+  display: block;
+  color: blue;
+}
+</style>
+<div class="column-container">
+  <div class="column">
+    <h3>Server Side</h3>
+    <ul>
+      <li><a href="https://micropython.org">MicroPython</a></li>
+      <li><a href="https://github.com/jczic/MicroWebSrv2">MicrowebSrv2</a></li>
+    </ul>
+  </div>
+  <div class="column">
+    <h3>Client Side</h3>
+    <ul>
+      <li><a href="https://html.spec.whatwg.org/ ">HTML</a></li>
+      <li><a href="https://javascript.com/">Javascript</a></li>
+      <li><a href="https://www.w3.org/">CSS</a></li>
+      <li><a href="https://purecss.io/">PureCss</a></li>
+      <li><a href="https://open-meteo.com/">Open-meteo</a></li>
+      <li><a href="https://chartjs.org">ChartJs</a></li>
+      <li><a href="http://worldtimeapi.org/api/ip">World Time Api</a></li>   
+    </ul>
+  </div>
+</div>
+
+<script src="ui.js"></script>
+
+</body>
+</html>

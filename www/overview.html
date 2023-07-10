@@ -1,0 +1,692 @@
+<!doctype html>
+<html lang="en">
+ <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="A layout example with a side menu that hides on mobile, just like the Pure website.">
+  <title>Green Monitor</title>
+  <link rel="stylesheet" href="pure-min.css">
+  <link rel="stylesheet" href="style.css">
+
+ </head>
+ 
+ <body>
+
+  <div id="layout">
+    <!-- Menu toggle -->
+    <a href="#menu" id="menuLink" class="menu-link">
+        <!-- Hamburger icon -->
+        <span></span>
+    </a>
+
+    <div id="menu">
+        <div class="pure-menu">
+            <a class="pure-menu-heading">Menu'</a>
+
+            <ul class="pure-menu-list">
+                <li class="pure-menu-item"><a href="overview.html" class="pure-menu-link">Overview</a></li>
+                <li class="pure-menu-item"><a href="functions.html" class="pure-menu-link">Functions</a></li>
+                <li class="pure-menu-item"><a href="settings.html" class="pure-menu-link">Settings</a></li>
+                <li class="pure-menu-item"><a href="about.html" class="pure-menu-link">About</a></li>
+
+            </ul>
+        </div>
+    </div>
+</div>
+  <div class="weather-box" id="weatherBox">
+  <div class="day" id="day">
+  <div class="night" id="night">
+<style>
+    .weather-box {
+      background-color: #3498db;
+      border-radius: 10px;
+      padding: 20px;
+      color: white;
+      width: 300px;
+      
+
+    }
+    .day {
+    background-color: #3498db;
+    color: white;
+    border-radius: 10px;
+
+  }
+  .day:hover {
+    transition: box-shadow 0.3s ease-in-out;
+      box-shadow: 0 0 10px 5px rgba(0, 0, 255, 0.5);
+  }
+  .night {
+    background-color: #34495e;
+    color: white;
+    border-radius: 10px;
+  }
+  .night:hover{
+    transition: box-shadow 0.3s ease-in-out;
+    box-shadow: 0 0 10px 5px rgba(26, 26, 85, 0.5);
+  }
+  .topleft {
+
+    margin-left: 90%;
+    margin-right: 9%;
+    margin-top: -59px;
+    font-size: 9pt;
+  }
+  .temp {
+    margin-left: 80%;
+    margin-right: 0%;
+    margin-top: 100px;
+    margin-bottom: 10px;
+    font-size:50px;
+    }
+    .weathercode{
+  
+    margin-left: 12%;
+    
+
+    }
+    .weather-table{
+      text-align: center;
+    }
+
+  </style>
+<script>
+
+  function toggleLayout() {
+    var layoutElement = document.getElementById("layout");
+    layoutElement.classList.toggle("active");
+  }
+
+    // Get the current page URL
+    var currentPage = window.location.href;
+
+    // Select the menu items
+    var menuItems = document.querySelectorAll('.pure-menu-link');
+
+    // Loop through the menu items
+    menuItems.forEach(function(menuItem) {
+        // Check if the menu item's href matches the current page URL
+        if (menuItem.href === currentPage) {
+            // Add the 'pure-menu-selected' class to the matching menu item
+            menuItem.parentNode.classList.add('pure-menu-selected');
+        }
+    });
+</script>
+</body>
+<script src="ui.js"></script>
+
+  <h1>Weather</h1>
+    <div class="topleft" id="topleft">
+
+
+    </div>
+    <p><span id="temperature" class="temp"></span> °C</p>
+    <p><span id="weathercode" class="weathercode"></span></p>
+
+    </div>
+
+</div>
+</div>
+  
+  <div>
+    <div> 
+      <style>
+        .grid-container {
+          display: grid;
+          width: 100%;
+
+        }
+        
+        .weather-table {
+          border-collapse: collapse;
+
+        }
+        
+        .weather-table th,
+        .weather-table td {
+          border: 1px solid #dddddd;
+          padding: 8px;
+          text-align: left;
+        
+
+        }
+        
+        .weather-table th {
+          background-color: #f2f2f2;
+        }
+        
+        .weather-table tr:nth-child(even) {
+          background-color: #f9f9f9;
+        }
+        
+        .weather-table tr:hover {
+          background-color: #f5f5f5;
+        }
+        
+        .weather-table thead th {
+          background-color: #e6e6e6;
+        }
+        
+        .weather-table tbody td {
+          font-weight: 400;
+        }
+        
+        .weather-table tbody tr:last-child td {
+          border-bottom: none;
+        }
+        
+        .weather-table tfoot th {
+          border-top: 2px solid #dddddd;
+        }
+        
+        .weather-table tfoot td {
+          font-weight: bold;
+        }
+        </style>  
+        <style>
+          .grid-container {
+            display: grid;
+            grid-template-columns: repeat(6, fr); /* Adjust the number of columns as needed */
+            gap: 8px; /* Adjust the gap between grid items */
+          }
+          
+          .weather-table {
+            border-collapse: collapse;
+            
+          }
+          
+          .weather-table th,
+          .weather-table td {
+            border: 1px solid #dddddd;
+            padding: 8px;
+            text-align: left;
+         }
+          
+          .weather-table th {
+            background-color: #f2f2f2;
+          }
+          
+          .weather-table tr:nth-child(even) {
+            background-color: #f9f9f9;
+          }
+          
+          .weather-table tr:hover {
+            background-color: #f5f5f5;
+          }
+          
+          .weather-table thead th {
+            background-color: #e6e6e6;
+          }
+          
+          .weather-table tbody td {
+            font-weight: 400;
+          }
+          
+          .weather-table tbody tr:last-child td {
+            border-bottom: none;
+          }
+          
+          .weather-table tfoot th {
+            border-top: 2px solid #dddddd;
+          }
+          
+          .weather-table tfoot td {
+            font-weight: bold;
+            text-align: center;
+
+          }
+          </style>
+<div class="grid-container">
+  <table class="weather-table">
+    <thead>
+      <tr>
+        <th>Days</th>
+        <th>Forecast</th>
+        <th>Temperature Min/Max</th>
+        <th>Probability Precipitation (%)</th>
+        <th>Wind Speed</th>
+    
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+                <!-- Repeat the above row structure for other days -->
+
+        <td>Today</td>
+        <td><span id="weathercode1"></span>
+        </td> 
+        </td>
+
+        <td><span id="temperature2mmin1"></span> /
+        <span id="temperature2mmax1"></span> °C</td>
+
+        <td><span id="probabilityprecipitationmax1"></span> %</td>
+        <td><span id="windspeed1"></span> km/h</td>
+     
+      </tr>
+      <tr>
+        <tr>
+          <td>Tomorrow</td>
+          <td><span id="weathercode2"></span></td>
+
+          <td><span id="temperature2mmin2"></span> /
+            <span id="temperature2mmax2"></span> °C</td>
+
+          <td><span id="probabilityprecipitationmax2"></span> %</td>
+          <td><span id="windspeed2"></span> km/h</td>
+    
+        </tr>
+        <tr>
+          <tr>
+            <td><span id="dailytime3"></span></td>
+            <td><span id="weathercode3"></span></td>
+
+            <td><span id="temperature2mmin3"></span> /
+            <span id="temperature2mmax3"></span> °C</td>
+
+
+            <td><span id="probabilityprecipitationmax3"></span> %</td>
+            <td><span id="windspeed3"></span> km/h</td>
+         
+          </tr>
+          <tr>
+            <tr>
+              <td><span id="dailytime4"></span></td>
+              <td><span id="weathercode4"></span></td>
+
+              <td><span id="temperature2mmin4"></span>/
+                <span id="temperature2mmax4"></span> °C</td>
+
+
+              <td><span id="probabilityprecipitationmax4"></span> %</td>
+              <td><span id="windspeed4"></span> km/h</td>
+      
+            </tr>
+            <tr>
+              <tr>
+                <td><span id="dailytime5"></span></td>
+                <td><span id="weathercode5"></span></td>
+
+                <td><span id="temperature2mmin5"></span> /
+                  <span id="temperature2mmax5"></span> °C</td>
+
+
+                <td><span id="probabilityprecipitationmax5"></span> %</td>
+                <td><span id="windspeed5"></span> km/h</td>
+        
+              </tr>
+              <tr>
+                <tr>
+                  <td><span id="dailytime6"></span></td>
+                  <td><span id="weathercode6"></span></td>
+
+                  <td><span id="temperature2mmin6"></span> /
+                    <span id="temperature2mmax6"></span> °C</td>
+
+
+                  <td><span id="probabilityprecipitationmax6"></span> %</td>
+                  <td><span id="windspeed6"></span> km/h</td>
+                </tr>
+                <tr>
+                  <tr>
+                    <td><span id="dailytime7"></span></td>
+                    <td><span id="weathercode7"></span></td>
+
+                    <td><span id="temperature2mmin7"></span> /
+                      <span id="temperature2mmax7"></span> °C</td>
+
+                    <td><span id="probabilityprecipitationmax7"></span> %</td>
+                    <td><span id="windspeed7"></span> km/h</td>
+                  </tr>
+                  
+      </tr>
+    </tbody>
+    <tfoot>
+      <tr>
+        <th colspan="9">Additional Information</th>
+      </tr>
+      <tr>
+<td colspan="4">
+  <p>
+    Latitude: <span id="latitude" class="topright"></span>,
+    Longitude: <span id="longitude" class="topright"></span>
+  </p>
+</td>
+<td>
+  <button id="fetchButton" class="button-secondary pure-button">Fetch Weather</button>
+</td>
+
+        <td><p><span id="isday"></span><script> 
+
+        </script></p>
+        </td>
+      </tr> 
+    </tfoot>
+  </table>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<canvas id="myChart"></canvas>
+<canvas id="hourlyChart"></canvas>
+
+<script>
+  //CHART WEEKLY
+  // Get the canvas element
+  const ctx = document.getElementById('myChart').getContext('2d');
+  const hourlyCtx = document.getElementById('hourlyChart').getContext('2d');
+
+  // Chart data
+  const data = {
+    labels: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+    datasets: [
+      {
+        label: 'Temp Min',
+        data: [], // We'll update this with minimum temperature values later
+        borderColor: 'rgb(75, 192, 192)',
+        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+        tension: 0.1 // Adjust the line curve (0 - straight lines, 0.1 - slightly curved, 0.4 - more curved)
+      },
+      {
+        label: 'Temp max',
+        data: [], // We'll update this with maximum temperature values later
+        borderColor: 'rgb(192, 75, 75)',
+        backgroundColor: 'rgba(192, 75, 75, 0.2)',
+        tension: 0.1 // Adjust the line curve (0 - straight lines, 0.1 - slightly curved, 0.4 - more curved)
+      }
+    ] 
+  };
+  
+
+  // Chart configuration
+  const config = {
+    type: 'line',
+    data: data,
+    options: {
+      responsive: true,
+      scales: {
+        y: {
+          beginAtZero: true // Start the y-axis at zero
+        }
+      },
+      plugins: {
+        legend: {
+          position: 'bottom', // Position the legend at the bottom
+        },
+        title: {
+          display: true,
+          text: 'Weekly Temperature' // Specify the title here
+        }
+      }
+    }
+  };
+
+  // Create the chart
+  const myChart = new Chart(ctx, config);
+
+  // Fetch the temperature data and update the chart
+  fetch('https://api.open-meteo.com/v1/forecast?latitude=44.18&longitude=9.58&hourly=temperature_2m,relativehumidity_2m,precipitation_probability,weathercode,cloudcover_low,cloudcover_high,windspeed_10m,soil_temperature_0cm,soil_moisture_0_1cm,is_day,diffuse_radiation&daily=weathercode,temperature_2m_max,temperature_2m_min,sunrise,sunset,precipitation_probability_max,windspeed_10m_max,shortwave_radiation_sum&current_weather=true&timezone=Europe%2FBerlin')
+    .then(response => response.json())
+    .then(apiData => {
+      const temperatureDatamin= apiData.daily.temperature_2m_min.slice(0, 7);
+      const temperatureDatamax= apiData.daily.temperature_2m_max.slice(0, 7);
+
+      myChart.data.datasets[0].data = temperatureDatamin; 
+      myChart.data.datasets[1].data = temperatureDatamax;
+
+      myChart.update();
+    })
+    .catch(error => { 
+      console.error('Error fetching data:', error); 
+    });
+
+    //CHART hourly
+     // Hourly Chart data
+  const hourlyData = {
+    labels: Array.from({ length: 24 }, (_, i) => `${i}:00`), // Hourly labels from 0:00 to 23:00
+    datasets: [
+      {
+        label: 'Temperature',
+        data: [], // We'll update this with hourly minimum temperature values later
+        borderColor: 'rgb(75, 192, 192)',
+        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+        tension: 0.1 // Adjust the line curve (0 - straight lines, 0.1 - slightly curved, 0.4 - more curved)
+      },
+    ] 
+  };
+
+  // Hourly Chart configuration
+  const hourlyConfig = {
+    type: 'line',
+    data: hourlyData,
+    options: {
+      responsive: true,
+      scales: {
+        y: {
+          beginAtZero: true // Start the y-axis at zero
+        }
+      },
+      plugins: {
+        legend: {
+          position: 'bottom', // Position the legend at the bottom
+        },
+        title: {
+          display: true,
+          text: 'Hourly Temperature' // Specify the title here
+        }
+      }
+    }
+  };
+
+  // Create the hourly chart
+  const hourlyChart = new Chart(hourlyCtx, hourlyConfig);
+
+  // Fetch the temperature data and update the charts
+  fetch('https://api.open-meteo.com/v1/forecast?latitude=44.18&longitude=9.58&hourly=temperature_2m')
+    .then(response => response.json())
+    .then(apiData => {
+
+
+      // Hourly temperature data
+      const hourlyTemperature = apiData.hourly.temperature_2m.slice(0, 24);
+
+      hourlyChart.data.datasets[0].data = hourlyTemperature;
+
+      hourlyChart.update();
+    })
+    .catch(error => { 
+      console.error('Error fetching data:', error); 
+    });
+
+
+</script>
+
+
+  <script>
+
+document.getElementById("fetchButton").addEventListener("click", fetchWeatherData);
+  
+function fetchWeatherData() {
+  //  const url = "https://api.open-meteo.com/v1/forecast?latitude=44.18&longitude=9.58&hourly=temperature_2m,relativehumidity_2m,windspeed_10m,soil_temperature_0cm,soil_moisture_0_1cm,is_day&models=best_match&daily=weathercode,temperature_2m_max,temperature_2m_min,windspeed_10m_max&current_weather=true&timezone=Europe%2FBerlin";
+    const url = "https://api.open-meteo.com/v1/forecast?latitude=44.18&longitude=9.58&hourly=temperature_2m,relativehumidity_2m,precipitation_probability,weathercode,cloudcover_low,cloudcover_high,windspeed_10m,soil_temperature_0cm,soil_moisture_0_1cm,is_day,diffuse_radiation&daily=weathercode,temperature_2m_max,temperature_2m_min,sunrise,sunset,precipitation_probability_max,windspeed_10m_max,shortwave_radiation_sum&current_weather=true&timezone=Europe%2FBerlin";
+    fetch(url)
+          .then(response => response.json())
+          .then(data => {
+                        // Update location
+            document.getElementById("dailytime3").textContent = data.daily.time[2];
+            var date = data.daily.time[2];
+            var day = date.substring(8, 10);
+            var month = date.substring(5, 7);
+            var formattedDate = day + "." + month;
+
+            document.getElementById("dailytime3").textContent = formattedDate;
+
+            document.getElementById("dailytime4").textContent = data.daily.time[3];
+            var date = data.daily.time[3];
+            var day = date.substring(8, 10);
+            var month = date.substring(5, 7);
+            var formattedDate = day + "." + month;
+
+            document.getElementById("dailytime4").textContent = formattedDate;
+
+            document.getElementById("dailytime5").textContent = data.daily.time[4];
+            var date = data.daily.time[4];
+            var day = date.substring(8, 10);
+            var month = date.substring(5, 7);
+            var formattedDate = day + "." + month;
+
+            document.getElementById("dailytime5").textContent = formattedDate;
+
+            document.getElementById("dailytime6").textContent = data.daily.time[5];
+            var date = data.daily.time[5];
+            var day = date.substring(8, 10);
+            var month = date.substring(5, 7);
+            var formattedDate = day + "." + month;
+
+            document.getElementById("dailytime6").textContent = formattedDate;
+
+            document.getElementById("dailytime7").textContent = data.daily.time[6];
+            var date = data.daily.time[6];
+            var day = date.substring(8, 10);
+            var month = date.substring(5, 7);
+            var formattedDate = day + "." + month;
+
+            document.getElementById("dailytime7").textContent = formattedDate;
+
+            document.getElementById("latitude").textContent = data.latitude;
+            document.getElementById("longitude").textContent = data.longitude;
+            document.getElementById("temperature").textContent = data.current_weather.temperature;
+    
+// Define the getWeatherMeaning() function
+
+
+function getWeatherMeaning(code) {
+  switch (code) {
+    case 0:
+      return "Clear sky";
+    case 1:
+    case 2:
+    case 3:
+      return "Mainly clear, partly cloudy, and overcast";
+    case 45:
+    case 48:
+      return "Fog and depositing rime fog";
+    case 51:
+    case 53:
+    case 55:
+      return "Drizzle: Light, moderate, and dense intensity";
+    case 56:
+    case 57:
+      return "Freezing Drizzle: Light and dense intensity";
+    case 61:
+    case 63:
+    case 65:
+      return "Rain: Slight, moderate and heavy intensity";
+    case 66:
+    case 67:
+      return "Freezing Rain: Light and heavy intensity";
+    case 71:
+    case 73:
+    case 75:
+      return "Snowfall: Slight, moderate, and heavy intensity";
+    case 77:
+      return "Snow grains";
+    case 80:
+    case 81:
+    case 82:
+      return "Rain showers: Slight, moderate, and violent";
+    case 85:
+    case 86:
+      return "Snow showers: Slight and heavy";
+    case 95:
+      return "Thunderstorm: Slight or moderate";
+    case 96:
+    case 99:
+      return "Thunderstorm with slight and heavy hail";
+    default:
+      return "Unknown code";
+  }
+}
+
+// Get the DOM elements and replace the WMO codes with descriptions
+document.getElementById("weathercode1").textContent = getWeatherMeaning(data.daily.weathercode[0]);
+document.getElementById("weathercode2").textContent = getWeatherMeaning(data.daily.weathercode[1]);
+document.getElementById("weathercode3").textContent = getWeatherMeaning(data.daily.weathercode[2]);
+document.getElementById("weathercode4").textContent = getWeatherMeaning(data.daily.weathercode[3]);
+document.getElementById("weathercode5").textContent = getWeatherMeaning(data.daily.weathercode[4]);
+document.getElementById("weathercode6").textContent = getWeatherMeaning(data.daily.weathercode[5]);
+document.getElementById("weathercode7").textContent = getWeatherMeaning(data.daily.weathercode[6]);
+
+
+            document.getElementById("temperature2mmin1").textContent = data.daily.temperature_2m_min[0];
+            document.getElementById("temperature2mmin2").textContent = data.daily.temperature_2m_min[1];
+            document.getElementById("temperature2mmin3").textContent = data.daily.temperature_2m_min[2];
+            document.getElementById("temperature2mmin4").textContent = data.daily.temperature_2m_min[3];
+            document.getElementById("temperature2mmin5").textContent = data.daily.temperature_2m_min[4];
+            document.getElementById("temperature2mmin6").textContent = data.daily.temperature_2m_min[5];
+            document.getElementById("temperature2mmin7").textContent = data.daily.temperature_2m_min[6];
+
+            document.getElementById("temperature2mmax1").textContent = data.daily.temperature_2m_max[0];
+            document.getElementById("temperature2mmax2").textContent = data.daily.temperature_2m_max[1];
+            document.getElementById("temperature2mmax3").textContent = data.daily.temperature_2m_max[2];
+            document.getElementById("temperature2mmax4").textContent = data.daily.temperature_2m_max[3];
+            document.getElementById("temperature2mmax5").textContent = data.daily.temperature_2m_max[4];
+            document.getElementById("temperature2mmax6").textContent = data.daily.temperature_2m_max[5];
+            document.getElementById("temperature2mmax7").textContent = data.daily.temperature_2m_max[6];
+
+
+
+            document.getElementById("probabilityprecipitationmax1").textContent = data.daily.precipitation_probability_max[0];
+            document.getElementById("probabilityprecipitationmax2").textContent = data.daily.precipitation_probability_max[1];
+            document.getElementById("probabilityprecipitationmax3").textContent = data.daily.precipitation_probability_max[2];
+            document.getElementById("probabilityprecipitationmax4").textContent = data.daily.precipitation_probability_max[3];
+            document.getElementById("probabilityprecipitationmax5").textContent = data.daily.precipitation_probability_max[4];
+            document.getElementById("probabilityprecipitationmax6").textContent = data.daily.precipitation_probability_max[5];
+            document.getElementById("probabilityprecipitationmax7").textContent = data.daily.precipitation_probability_max[6];
+
+
+            document.getElementById("windspeed1").textContent = data.daily.windspeed_10m_max[0];
+            document.getElementById("windspeed2").textContent = data.daily.windspeed_10m_max[1];
+            document.getElementById("windspeed3").textContent = data.daily.windspeed_10m_max[2];
+            document.getElementById("windspeed4").textContent = data.daily.windspeed_10m_max[3];
+            document.getElementById("windspeed5").textContent = data.daily.windspeed_10m_max[4];
+            document.getElementById("windspeed6").textContent = data.daily.windspeed_10m_max[5];
+            document.getElementById("windspeed7").textContent = data.daily.windspeed_10m_max[6];
+
+
+            document.getElementById("isday").textContent = data.current_weather.is_day;
+
+                var isday = data.current_weather.is_day;
+                if (isday === 0) {
+                    document.getElementById("isday").textContent = "Night";
+                    weatherBox.classList.remove("weather-box");
+                    weatherBox.classList.remove("day");
+                    weatherBox.classList.add("night");
+
+                } else {
+                     document.getElementById("isday").textContent = "Day";
+                     weatherBox.classList.remove("weather-box");
+                     weatherBox.classList.remove("night");
+                     weatherBox.classList.add("day");
+                }
+            document.getElementById("weathercode").textContent = data.current_weather.weathercode;
+                // Update current weather
+                var weatherCode = data.current_weather.weathercode;
+                document.getElementById("weathercode").textContent = getWeatherMeaning(weatherCode);
+
+        })
+        .catch(error => console.log(error));
+}
+    // Fetch data initially
+     fetchWeatherData();
+
+    // Fetch data every 10 minutes
+    setInterval(fetchWeatherData, 43200000 );
+
+
+    
+
+  </script>
+  <script src="ui.js"></script>
+
+</body>
+

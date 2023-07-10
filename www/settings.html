@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="A layout example with a side menu that hides on mobile, just like the Pure website.">
+    <title>Settings</title>
+    <link rel="stylesheet" href="pure-min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div id="layout">
+        <!-- Menu toggle -->
+        <a href="#menu" id="menuLink" class="menu-link">
+            <!-- Hamburger icon -->
+            <span></span>
+        </a>
+    
+        <div id="menu">
+            <div class="pure-menu">
+                <a class="pure-menu-heading">Menu'</a>
+    
+                <ul class="pure-menu-list">
+                    <li class="pure-menu-item"><a href="overview.html" class="pure-menu-link">Overview</a></li>
+                    <li class="pure-menu-item"><a href="functions.html" class="pure-menu-link">Functions</a></li>
+                    <li class="pure-menu-item"><a href="settings.html" class="pure-menu-link">Settings</a></li>
+                    <li class="pure-menu-item"><a href="about.html" class="pure-menu-link">About</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Get the current page URL
+        var currentPage = window.location.href;
+    
+        // Select the menu items
+        var menuItems = document.querySelectorAll('.pure-menu-link');
+    
+        // Loop through the menu items
+        menuItems.forEach(function(menuItem) {
+            // Check if the menu item'ssshref matches the current page URL
+            if (menuItem.href === currentPage) {
+                // Add the 'pure-menu-selected' class to the matching menu item
+                menuItem.parentNode.classList.add('pure-menu-selected');
+            }
+        });
+    </script>
+ <head>
+
+  <style>
+    .grid-container {
+      display: grid;
+      grid-template-columns: repeat(6, fr); /* Adjust the number of columns as needed */
+      gap: 8px; /* Adjust the gap between grid items */
+    }
+    
+    .weather-table {
+      border-collapse: collapse;
+    }
+    
+    .weather-table th,
+    .weather-table td {
+      border: 1px solid #dddddd;
+      padding: 8px;
+      text-align: left;
+    }
+    
+    .weather-table th {
+      background-color: #f2f2f2;
+    }
+    
+    .weather-table tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+    
+    .weather-table tr:hover {
+      background-color: #f5f5f5;
+    }
+    
+    .weather-table thead th {
+      background-color: #e6e6e6;
+    }
+    
+    .weather-table tbody td {
+      font-weight: 400;
+    }
+    
+    .weather-table tbody tr:last-child td {
+      border-bottom: none;
+    }
+    
+    .weather-table tfoot th {
+      border-top: 2px solid #dddddd;
+    }
+    
+    .weather-table tfoot td {
+      font-weight: bold;
+      text-align: center;
+    }
+    
+    table {
+      border-collapse: collapse;
+      width: 100%;
+    }
+    
+    th, td {
+      border: 1px solid black;
+      padding: 8px;
+      text-align: left;
+    }
+  </style>
+</head>
+<body>
+<h1>Settings</h1>
+<div class="grid-container">
+    <table class="weather-table">
+        <thead>
+            <tr>
+                <th>SSID</th>
+                <th>Channel</th>
+                <th>Power</th>          
+                <th>Authentication</th>
+                <th>Connect</th>
+            </tr>
+        </thead>
+        <tbody id="networkTableBody">
+            <!-- The table body will be populated dynamically -->
+        </tbody>
+    </table>
+</div>
+
+<button onclick="refreshNetworkList()">Refresh</button>
+
+<script>
+
+// Function to fetch the network list from the server
+function fetchNetworkList() {
+  fetch('/wifiscan')
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Network request failed');
+      }
+      return response.json();
+    })
+    .then(networkList => {
+      console.log('Received network list:', networkList);
+
+      // Clear previous table data
+      const tableBody = document.getElementById('networkTableBody');
+      tableBody.innerHTML = '';
+
+      // Populate the table with network information
+      for (const network of networkList) {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${network.ssid}</td>
+          <td>${network.channel}</td>
+          <td>${network.power}</td>
+          <td>${network.auth_mode}</td>
+          <td><button onclick="openPasswordWindow('${network.ssid}')">Connect</button></td>
+
+        `;
+        tableBody.appendChild(row);
+      }
+    })
+    .catch(error => {
+      console.error('Error:', error);
+    });
+}
+
+// Function to refresh the network list
+const refreshNetworkList = () => {
+  fetchNetworkList();
+};
+
+// Function to handle password input
+const openPasswordWindow = (ssid) => {
+  const password = prompt(`Enter password for SSID: ${ssid}`);
+  if (password !== null) {
+    const payload = {
+      ssid: ssid,
+      password: password
+    };
+    console.log(payload);
+    sendConnectionRequest(payload);
+  }
+};
+
+// Function to send the connection request to the server
+const sendConnectionRequest = (payload) => {
+  fetch('/connect', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(payload)
+  })
+    .then(response => response.json())
+    .then(data => {
+      console.log(data);
+      // Handle the response from the server as needed
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      // Handle errors and display appropriate feedback to the user
+    });
+};
+
+
+
+// Initial fetch on page load
+fetchNetworkList();
+
+</script>
+
+
+    <script src="ui.js"></script>
+
+</body>
+</html>

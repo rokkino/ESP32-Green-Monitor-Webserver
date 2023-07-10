@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="A layout example with a side menu that hides on mobile, just like the Pure website.">
+    <title>Responsive Side Menu &ndash; Layout Examples &ndash; Pure</title>
+    <link rel="stylesheet" href="pure-min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="layout">
+        <!-- Menu toggle -->
+        <a href="#menu" id="menuLink" class="menu-link">
+            <!-- Hamburger icon -->
+            <span></span>
+        </a>
+    
+        <div id="menu">
+            <div class="pure-menu">
+                <a class="pure-menu-heading" href="#company">test</a>
+    
+                <ul class="pure-menu-list">
+                    <li class="pure-menu-item"><a href="home.html" class="pure-menu-link">Home</a></li>
+                    <li class="pure-menu-item"><a href="services.html" class="pure-menu-link">Services</a></li>
+                    <li class="pure-menu-item"><a href="about.html" class="pure-menu-link">About</a></li>
+                                       <li class="pure-menu-item"><a href="contact.html" class="pure-menu-link">Contact</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <script>
+        // Get the current page URL
+        var currentPage = window.location.href;
+    
+        // Select the menu items
+        var menuItems = document.querySelectorAll('.pure-menu-link');
+    
+        // Loop through the menu items
+        menuItems.forEach(function(menuItem) {
+            // Check if the menu item's href matches the current page URL
+            if (menuItem.href === currentPage) {
+                // Add the 'pure-menu-selected' class to the matching menu item
+                menuItem.parentNode.classList.add('pure-menu-selected');
+            }
+        });
+    </script>
+</body>
+<script src="ui.js"></script>
