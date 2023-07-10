@@ -126,4 +126,4 @@ Feel free to explore and customize the web server code according to your specifi
 
 ## License
 
-This project is licensed under the [MIT License](LICENSE).
+This project is licensed under the  Apache-2.0 license.
