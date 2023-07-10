@@ -320,7 +320,7 @@ mws2 = MicroWebSrv2()
  #               keyFile  = 'SSL-Cert/openhc2.key' )
 
 # For embedded MicroPython, use a very light configuration,
-mws2.SetEmbeddedConfig() very minimal setting
+mws2.SetEmbeddedConfig() # very minimal setting
 #mws2.SetLightConfig() #light setting
 
 # All pages not found will be redirected to the home '/',
