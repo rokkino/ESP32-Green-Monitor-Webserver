@@ -1,3 +1,4 @@
+![GREENMONITOR](https://github.com/rokkino/ESP32-Green-Monitor-Webserver/assets/109034293/59de4184-9b12-4647-be25-c9d3cd855d60)
 # WebServer for ESP32 in MicroPython
 
 This repository contains the code for an Internet of Things (IoT) web server implemented in MicroPython for ESP32 devices. The web server allows you to connect your ESP32 to your network and control its ports, enabling automation and remote control capabilities.
