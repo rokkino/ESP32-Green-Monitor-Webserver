@@ -328,18 +328,16 @@ mws2.NotFoundURL = '/overview.html'
 # Starts the server as easily as possible in managed mode,
 mws2.StartManaged()
 
-while True:
-    sleep(10)
 
     # Run your code here
 
     # Check free heap size after running your code
-    final_free_heap = gc.mem_free()
-    print("Final free heap:", final_free_heap)
+final_free_heap = gc.mem_free()
+print("Final free heap:", final_free_heap)
 
     # Calculate the heap usage
-    heap_usage = initial_free_heap - final_free_heap
-    print("Heap usage:", heap_usage)
+heap_usage = initial_free_heap - final_free_heap
+print("Heap usage:", heap_usage)
 
 # ============================================================================
 # ============================================================================
