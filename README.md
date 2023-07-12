@@ -64,7 +64,36 @@ Before installing and running the web server, please make sure you have the foll
    ```
 
 3. **esptool**: Install esptool using pip by running the following command:
+![GREENMONITOR](https://github.com/rokkino/ESP32-Green-Monitor-Webserver/assets/109034293/c332f3c1-494c-4c57-9602-2fb6828d9ec6)
+# WebServer for ESP32 in MicroPython
 
+This repository contains the code for an Internet of Things (IoT) web server implemented in MicroPython for ESP32 devices. The web server allows you to connect your ESP32 to your network and control its ports, enabling automation and remote control capabilities.
+
+## Installation
+
+### Prerequisites
+
+Before installing and running the web server, please make sure you have the following dependencies installed on your system:
+
+1. **rshell** - A remote shell tool for MicroPython devices.
+2. **rsync** - A fast and versatile file synchronization tool.
+3. **esptool** - A utility for erasing and flashing MicroPython firmware onto ESP32 devices.
+
+#### Windows
+
+1. **rshell**: Install rshell using pip by running the following command in your command prompt or PowerShell:
+
+   ```shell
+   pip install rshell
+   ```
+
+2. **rsync**: Download and install cwRsync from [cwRsync Downloads](https://www.itefix.net/cwrsync) to get rsync on your Windows machine.
+
+3. **esptool**: Install esptool using pip by running the following command:
+
+   ```shell
+   pip install esptool
+   ```
    ```shell
    pip install esptool
    ```
@@ -118,6 +147,13 @@ To upload the web server files to your ESP32 device, follow these steps:
    ```
 
    This command will copy all the files from the current directory to the `/pyboard` directory on the ESP32.
+
+5. After uploading the files to the ESP32 using rsync, you can access the ESP32's REPL (Read-Eval-Print Loop) to interact with the microcontroller and debug the data. Here's how you can do it:
+
+   ```shell
+   repl
+   ```
+   Then press Ctrl + D to reboot the microcontroller and debug the data. 
 
 ## Usage
 
