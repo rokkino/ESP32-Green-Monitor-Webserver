@@ -1,35 +1,19 @@
-
-
 from MicroWebSrv2  import *
 from time          import sleep
-from _thread       import allocate_lock
 import network
 import machine
 import json
-import urequests
-import utime
 import gc
 
 # ============================================================================
-
 waterpump14 = machine.Pin(14, machine.Pin.OUT)
 humidity15 = machine.Pin(15, machine.Pin.OUT)
 led16 = machine.Pin(16, machine.Pin.OUT)  # Assuming the LED is connected to GPIO pin 16
+# ============================================================================
 
 # Check initial free heap size
-initial_free_heap = gc.mem_free()
-print("Initial free heap:", initial_free_heap)
-
-
-# ============================================================================
-#sta_if = network.WLAN(network.STA_IF)
-#if not sta_if.isconnected():
-#    print('Connecting to network...')
-#    sta_if.active(True)
-#    sta_if.connect('UNO_AA14F6','30B7CAC8C8')
-#    while not sta_if.isconnected():
-#      pass
-#print('Network config:', sta_if.ifconfig())
+#initial_free_heap = gc.mem_free()
+#print("Initial free heap:", initial_free_heap)
 
 
 config_file = "wifi_config.json"
@@ -97,6 +81,7 @@ connect_to_wifi()
 
 
 # ============================================================================ 
+
 @WebRoute(GET, '/waterpumpon')
 def _httpHandlerLedOnGet(microWebSrv2, request):
     waterpump14.on()
@@ -134,8 +119,7 @@ def _httpHandlerLedOnGet(microWebSrv2, request):
 def _httpHandlerLedOffGet(microWebSrv2, request):
     led16.off()
     request.Response.ReturnOk()
-    return True
-
+    return True    
 
 @WebRoute(GET, '/checkdevice')
 def _httpHandlerCheckLED(microWebSrv2, request):
@@ -178,6 +162,7 @@ def wifi_scan_handler(microWebSrv2, request):
     	
     request.Response.ReturnJSON(200, network_list)
 
+
 @WebRoute(GET, '/devicetimerget')
 def _httpHandlerCheckDevice(microWebSrv2, request):
     try:
@@ -194,62 +179,42 @@ def _httpHandlerCheckDevice(microWebSrv2, request):
         # In case of any error, return a bad request response
         request.Response.ReturnBadRequest()
         
+
+
 @WebRoute(POST, '/devicetimerpost')
-def _httpHandlerdevicetimer(microWebSrv2, request):
+def _httpHandlerAddTimer(microWebSrv2, request):
     try:
         # Parse the JSON data from the request body
         data = request.GetPostedJSONObject()
-        device_name = data.get('device')
-        device_state = data.get('state')
-        device_timer = data.get('time')
 
-        # Perform necessary operations with the received data
-        # (e.g., set the timer for the specified device)
-        if device_name == 'Water Pump':
-            if device_state == 'on':
-                waterpump14.on()
-            elif device_state == 'off':
-                waterpump14.off()
-        elif device_name == 'Humidity Sensor':
-            if device_state == 'on':
-                humidity15.on()
-            elif device_state == 'off':
-                humidity15.off()
-        elif device_name == 'LED test':
-            if device_state == 'on':
-                led16.on()
-            elif device_state == 'off':
-                led16.off()
-
-        # Prepare the response content
-        content = json.dumps({'message': 'Timer set successfully'})
-
-        # Read the existing timer data from the JSON file
+        # Read the existing timers from the JSON file
         with open('devicetimer.json', 'r') as file:
-            timer_data = json.load(file)
- 
+            timers = json.load(file)
 
-        # Prepare a list to store network information
-        device_list = []
-        # Add the new timer to the timer data
-        for device, state, time in timer_data:
-       	 device_info = {
-            'device': device_name,
-            'state': device_state,
-            'time': device_timer
-         }
-         device_list.append(device_info)
+        # Check if timers is a list, otherwise initialize as an empty list
+        if not isinstance(timers, list):
+            timers = []
 
+        # Add the new timer to the list of timers
+        timers.append(data)
 
-        # Store the updated timer information in the JSON file
+        # Write the updated timers back to the JSON file
         with open('devicetimer.json', 'w') as file:
-            json.dump(device_list, file)
+            json.dump(timers, file)
 
-        # Send the response
-        request.Response.ReturnJson(200, device_list)
-    except:
+        # Print the array of JSON timers
+        print("Timers:", timers)
+
+        # Return a success response
+        request.Response.ReturnJSON(200, timers)
+
+    except Exception as e:
+        # Log the exception (if logging is available)
+        print("Exception:", str(e))
+
         # In case of any error, return a bad request response
         request.Response.ReturnBadRequest()
+
 
 @WebRoute(POST, '/connect')
 def connect_handler_post(microWebSrv2, request):
@@ -277,37 +242,11 @@ def connect_handler_post(microWebSrv2, request):
     # Reboot the MCU
     machine.reset()
 
-
-
-
-
-
-# ============================================================================
-# ============================================================================
 # ============================================================================
 MicroWebSrv2.AddDefaultPage('overview.html')
 
 
 # ------------------------------------------------------------------------
-
-# ============================================================================
-# ============================================================================
-# ============================================================================
-
-
-# ============================================================================
-# ============================================================================
-# ============================================================================
-
-# ============================================================================
-# ============================================================================
-# ============================================================================
-
-# ------------------------------------------------------------------------
-
-# ============================================================================
-# ============================================================================
-# ============================================================================
 
 
 # Instanciates the MicroWebSrv2 class,
@@ -329,16 +268,3 @@ mws2.NotFoundURL = '/overview.html'
 mws2.StartManaged()
 
 
-    # Run your code here
-
-    # Check free heap size after running your code
-final_free_heap = gc.mem_free()
-print("Final free heap:", final_free_heap)
-
-    # Calculate the heap usage
-heap_usage = initial_free_heap - final_free_heap
-print("Heap usage:", heap_usage)
-
-# ============================================================================
-# ============================================================================
-# ============================================================================

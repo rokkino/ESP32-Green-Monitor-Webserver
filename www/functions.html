@@ -67,8 +67,7 @@
       font-weight: bold;
     }
   </style>
-  
-    <script>
+     <script>
         // Get the current page URL
         var currentPage = window.location.href;
     
@@ -147,23 +146,31 @@ document.addEventListener('DOMContentLoaded', function() {
         <tbody>
             <tr>
 
- <td>Water Pump</td>
+<td>Water Pump</td>
 <td>Pin 14</td>
 <td>
-    <div class="pure-button-group" role="group" aria-label="...">
-        <button id="button1" class="pure-button pure-button-primary">OFF</button>
-        <button id="button2" class="pure-button">ON</button>
-    </div>
+  <div class="pure-button-group" role="group" aria-label="...">
+    <button id="button1" class="pure-button pure-button-primary">OFF</button>
+    <button id="button2" class="pure-button">ON</button>
+  </div>
 </td>
-      <td>
-        <input type="time" class="timer-input">
-        <select class="timer-state">
-          <option value="on">On</option>
-          <option value="off">Off</option>
-        </select>
-    <button class="timer-button pure-button" data-device="Water Pump">Set Timer</button>
-
-      </td>
+<td>
+  <input type="time" class="timer-input">
+  <select class="timer-state">
+    <option value="on">On</option>
+    <option value="off">Off</option>
+  </select>
+  <select id="dayOfWeekSelector">
+    <option value="Monday">Monday</option>
+    <option value="Tuesday">Tuesday</option>
+    <option value="Wednesday">Wednesday</option>
+    <option value="Thursday">Thursday</option>
+    <option value="Friday">Friday</option>
+    <option value="Saturday">Saturday</option>
+    <option value="Sunday">Sunday</option>
+  </select>
+  <button class="timer-button pure-button" data-device="Water Pump">Set Timer</button>
+</td>
 <script>
     var button1 = document.getElementById('button1');
     var button2 = document.getElementById('button2');
@@ -237,6 +244,15 @@ document.addEventListener('DOMContentLoaded', function() {
           <option value="on">On</option>
           <option value="off">Off</option>
         </select>
+        <select id="dayOfWeekSelector">
+  <option value="Monday">Monday</option>
+  <option value="Tuesday">Tuesday</option>
+  <option value="Wednesday">Wednesday</option>
+  <option value="Thursday">Thursday</option>
+  <option value="Friday">Friday</option>
+  <option value="Saturday">Saturday</option>
+  <option value="Sunday">Sunday</option>
+</select>
     <button class="timer-button pure-button" data-device="Humidity Sensor">Set Timer</button>
       </td>
 
@@ -295,7 +311,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 </script>
 
-                        </script>
+                        
                       </div>
                       
                 </div></td>
@@ -316,6 +332,15 @@ document.addEventListener('DOMContentLoaded', function() {
           <option value="on">On</option>
           <option value="off">Off</option>
         </select>
+        <select id="dayOfWeekSelector">
+  <option value="Monday">Monday</option>
+  <option value="Tuesday">Tuesday</option>
+  <option value="Wednesday">Wednesday</option>
+  <option value="Thursday">Thursday</option>
+  <option value="Friday">Friday</option>
+  <option value="Saturday">Saturday</option>
+  <option value="Sunday">Sunday</option>
+</select>
     <button class="timer-button pure-button" data-device="LED test">Set Timer</button>
       </td>
 
@@ -378,6 +403,8 @@ function checkLEDStatus() {
 
 </script>
 <script>
+
+
 // Add event listeners for timer buttons in each row
 var timerButtons = document.getElementsByClassName('timer-button');
 for (var i = 0; i < timerButtons.length; i++) {
@@ -385,41 +412,64 @@ for (var i = 0; i < timerButtons.length; i++) {
     var row = this.parentNode.parentNode;
     var timerInput = row.querySelector('.timer-input');
     var timerState = row.querySelector('.timer-state');
+    var timerDay = row.querySelector('#dayOfWeekSelector');
     var time = timerInput.value;
     var state = timerState.value;
+    var dayOfWeek = timerDay.value;
     var deviceName = this.dataset.device; // Get the device name from the data attribute
 
     if (time) {
-      startTimer(time, state, deviceName); // Pass the device name to the startTimer function
+      startTimer(time, state, deviceName, dayOfWeek); // Pass the day of the week and device name to the startTimer function
 
       timerInput.value = '';
 
-      // Create the payload for the GET request
-      var url = '/devicetimer?device=' + deviceName + '&time=' + time + '&state=' + state;
 
-      // Make a GET request to the /devicetimer endpoint using fetch
-      fetch(url)
-        .then(response => {
-          if (response.ok) {
-            // Request was successful
-            console.log('Timer set successfully');
-            // Refresh the page or update the timer list if needed
-            // Example: window.location.reload();
-          } else {
-            // Request encountered an error
-            console.log('Error setting timer');
-          }
-        })
-        .catch(error => {
-          console.error('Error:', error);
-        });
+	// Create the payload for the POST request
+	var payload = {
+	  device: deviceName,
+	  state: state,
+	  time: time,
+	  dayOfWeek: dayOfWeek
+	};
+
+
+	// Serialize the payload to a JSON string
+	var serializedPayload = JSON.stringify(payload);
+
+	// Log the serialized payload
+	console.log('Serialized Payload:', serializedPayload);
+
+	// Make a POST request to the /devicetimerpost endpoint using fetch
+	fetch('/devicetimerpost', {
+	  method: 'POST',
+	  headers: {
+	    'Content-Type': 'application/json'
+	  },
+	  body: serializedPayload
+	})
+	  .then(response => {
+	    if (response.ok) {
+	      // Request was successful
+	      console.log('Timer set successfully');
+	      // Refresh the page or update the timer list if needed
+	      // Example: window.location.reload();
+	    } else {
+	      // Request encountered an error
+	      console.log('Error setting timer');
+	    }
+	  })
+	  .catch(error => {
+	    console.error('Error:', error);
+	  });
+
+
     }
   });
 }
 
-function startTimer(time, state, deviceName) {
+function startTimer(time, state, deviceName, dayOfWeek) {
   // Implement timer logic here for the specified device
-  // You can use the provided time, state, and deviceName values to control the timer
+  // You can use the provided time, state, deviceName, and dayOfWeek values to control the timer
   // Example: make an AJAX request to set the timer for the device
   // Extract hours and minutes from the time input
   var [hours, minutes] = time.split(':');
@@ -430,7 +480,7 @@ function startTimer(time, state, deviceName) {
   // Format the time with AM/PM indicator
   var formattedTime = hours + ':' + minutes + ' ' + period;
 
-  // Update the table to display the device name, switch state, and time
+  // Update the table to display the device name, switch state, time, and day of the week
   var table = document.getElementById('timerInfoTable');
   var tbody = table.getElementsByTagName('tbody')[0];
   var newRow = document.createElement('tr');
@@ -447,47 +497,17 @@ function startTimer(time, state, deviceName) {
   timeCell.textContent = formattedTime; // Use the formatted time instead of the original input time
   newRow.appendChild(timeCell);
 
+  var dayOfWeekCell = document.createElement('td');
+  dayOfWeekCell.textContent = dayOfWeek;
+  newRow.appendChild(dayOfWeekCell);
+
   tbody.appendChild(newRow);
-
-  // Create the payload for the POST request
-  var payload = {
-    device: deviceName,
-    state: state,
-    time: time
-  };
-
-  // Make a POST request to the server endpoint using fetch
-  fetch('/devicetimerpost', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(payload)
-  })
-    .then(response => {
-      if (response.ok) {
-        // Request was successful
-        console.log('Timer added successfully', payload);
-      } else {
-        // Request encountered an error
-        console.log('Error adding timer');
-      }
-    })
-    .catch(error => {
-      console.error('Error:', error);
-    });
 }
 
 // Fetch and display the saved timers when the page is loaded
 document.addEventListener('DOMContentLoaded', function() {
   fetchSavedTimers(); // Fetch the saved timers
 });
-
-// Fetch and display the saved timers when the page is loaded
-document.addEventListener('DOMContentLoaded', function() {
-  fetchSavedTimers(); // Fetch the saved timers
-});
-
 function fetchSavedTimers() {
   fetch('/devicetimerget')
     .then(response => {
@@ -502,25 +522,36 @@ function fetchSavedTimers() {
       var timerInfoTable = document.getElementById('timerInfoTable');
       var tbody = timerInfoTable.getElementsByTagName('tbody')[0];
 
-      // Iterate over the timer data and create table rows
-      for (var i = 0; i < data.length; i++) {
-        var timerData = data[i];
+      // Clear existing table rows
+      tbody.innerHTML = '';
 
-        var newRow = document.createElement('tr');
+      // Check if data is an array
+      if (Array.isArray(data)) {
+        // Loop through the array of timers
+        data.forEach(timer => {
+          var newRow = document.createElement('tr');
 
-        var deviceNameCell = document.createElement('td');
-        deviceNameCell.textContent = timerData.device;
-        newRow.appendChild(deviceNameCell);
+          var deviceNameCell = document.createElement('td');
+          deviceNameCell.textContent = timer.device;
+          newRow.appendChild(deviceNameCell);
 
-        var switchStateCell = document.createElement('td');
-        switchStateCell.textContent = timerData.state;
-        newRow.appendChild(switchStateCell);
+          var switchStateCell = document.createElement('td');
+          switchStateCell.textContent = timer.state;
+          newRow.appendChild(switchStateCell);
 
-        var timeCell = document.createElement('td');
-        timeCell.textContent = timerData.time;
-        newRow.appendChild(timeCell);
+          var timeCell = document.createElement('td');
+          timeCell.textContent = timer.time;
+          newRow.appendChild(timeCell);
 
-        tbody.appendChild(newRow);
+          var dayOfWeekCell = document.createElement('td');
+          dayOfWeekCell.textContent = timer.dayOfWeek; // Display the day of the week
+          newRow.appendChild(dayOfWeekCell);
+
+          // Append the row to the table body
+          tbody.appendChild(newRow);
+        });
+      } else {
+        throw new Error('Invalid timer data received');
       }
     })
     .catch(error => {
@@ -529,7 +560,20 @@ function fetchSavedTimers() {
 }
 
 
+
 </script>
+
+<style>
+  .table-container {
+    margin-top: 50px;
+    margin-bottom: 50px;
+  }
+
+  .pure-table {
+    width: 100%;
+  }
+</style>
+
 <!-- Table to display device and timer information -->
 <div class="table-container">
   <table id="timerInfoTable" class="pure-table">
@@ -538,6 +582,7 @@ function fetchSavedTimers() {
         <th>Device</th>
         <th>Switch</th>
         <th>Time</th>
+        <th>Day</th> <!-- Add a new table header -->
       </tr>
     </thead>
     <tbody>
@@ -545,6 +590,7 @@ function fetchSavedTimers() {
     </tbody>
   </table>
 </div>
+
 <style>
   .table-container {
     margin-top: 50px;
