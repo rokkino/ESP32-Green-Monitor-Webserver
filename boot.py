@@ -1,19 +1,13 @@
-from MicroWebSrv2  import *
+from MicroWebSrv2 import *
 from time          import sleep
-import network
 import machine
 import json
-import gc
-
-# ============================================================================
+import network
 waterpump14 = machine.Pin(14, machine.Pin.OUT)
 humidity15 = machine.Pin(15, machine.Pin.OUT)
 led16 = machine.Pin(16, machine.Pin.OUT)  # Assuming the LED is connected to GPIO pin 16
 # ============================================================================
 
-# Check initial free heap size
-#initial_free_heap = gc.mem_free()
-#print("Initial free heap:", initial_free_heap)
 
 
 config_file = "wifi_config.json"
@@ -35,8 +29,6 @@ def save_wifi_config(ssid, password):
 
 # Connect to Wi-Fi using stored or provided credentials
 def connect_to_wifi():
-  
-
 
     wifi_config = load_wifi_config()
     sta_if = network.WLAN(network.STA_IF)
@@ -58,29 +50,18 @@ def connect_to_wifi():
 
     if sta_if.isconnected():
         print('Connected to Wi-Fi. Network config:', sta_if.ifconfig())
-
-
-
-
     else:
         print('No connection to stored Wi-Fi. Starting Green Monitor access point mode...')
         sta_if.active(False)  # Disable station mode
         ap_if = network.WLAN(network.AP_IF)
         ap_if.active(True)
 
-
-
         ap_if.config(essid='Green Monitor', authmode=network.AUTH_OPEN)
         print('Green Monitor access point mode started. Network config:', ap_if.ifconfig())
-
-
-
 
 # Call the connect_to_wifi function to connect on startup
 connect_to_wifi()
 
-
-# ============================================================================ 
 
 @WebRoute(GET, '/waterpumpon')
 def _httpHandlerLedOnGet(microWebSrv2, request):
@@ -208,6 +189,9 @@ def _httpHandlerAddTimer(microWebSrv2, request):
         # Return a success response
         request.Response.ReturnJSON(200, timers)
 
+        # Toggle the buttons based on the timer immediately after adding the new timer
+        toggle_buttons_based_on_timer()
+
     except Exception as e:
         # Log the exception (if logging is available)
         print("Exception:", str(e))
@@ -251,7 +235,6 @@ MicroWebSrv2.AddDefaultPage('overview.html')
 
 # Instanciates the MicroWebSrv2 class,
 mws2 = MicroWebSrv2()
-
 
 # SSL is not correctly supported on MicroPython.
 # But you can uncomment the following for standard Python.
