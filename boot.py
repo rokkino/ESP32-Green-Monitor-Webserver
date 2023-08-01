@@ -2,12 +2,20 @@ from MicroWebSrv2 import *
 from time          import sleep
 import machine
 import json
-import network
+import utime
+import ntptime
+import gc
+from _thread       import allocate_lock
+
+# ============================================================================
 waterpump14 = machine.Pin(14, machine.Pin.OUT)
 humidity15 = machine.Pin(15, machine.Pin.OUT)
-led16 = machine.Pin(16, machine.Pin.OUT)  # Assuming the LED is connected to GPIO pin 16
+led16 = machine.Pin(12, machine.Pin.OUT)  # Assuming the LED is connected to GPIO pin 16
 # ============================================================================
 
+# Check initial free heap size
+initial_free_heap = gc.mem_free()
+print("Initial free heap:", initial_free_heap)
 
 
 config_file = "wifi_config.json"
@@ -29,7 +37,7 @@ def save_wifi_config(ssid, password):
 
 # Connect to Wi-Fi using stored or provided credentials
 def connect_to_wifi():
-
+    import network
     wifi_config = load_wifi_config()
     sta_if = network.WLAN(network.STA_IF)
     
@@ -62,6 +70,74 @@ def connect_to_wifi():
 # Call the connect_to_wifi function to connect on startup
 connect_to_wifi()
 
+# Function to get the current time from NTP server
+def get_current_time():
+    ntptime.settime()  # Set the RTC (Real-Time Clock) using NTP
+
+    # Get the current time as a tuple (year, month, day, hour, minute, second, weekday, yearday)
+    current_time = utime.localtime()
+
+    # Add 2 hours to the hour component of the time tuple
+    current_time = (
+        current_time[0],
+        current_time[1],
+        current_time[2],
+        current_time[3] + 2,
+        current_time[4],
+        current_time[5],
+        current_time[6],
+        current_time[7],
+    )
+
+    return current_time
+
+# Function to get the day name
+def get_day_name(weekday):
+    days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+    return days[weekday]
+    
+# Function to format and print the time
+def print_current_time():
+    current_time = get_current_time()
+    formatted_time = "{:04}-{:02}-{:02} {:02}:{:02}:{:02} ({})".format(
+        current_time[0], current_time[1], current_time[2],
+        current_time[3], current_time[4], current_time[5],
+        get_day_name(current_time[6])  # Get the day name from the weekday component
+    )
+    print("Current time :", formatted_time)
+    
+def toggle_button(pin, state):
+    pin.value(state)
+
+# Function to toggle the buttons based on the timer
+def toggle_buttons_based_on_timer():
+    try:
+        # Get the current time
+        current_time = get_current_time()
+
+        # Get the day name
+        day_name = get_day_name(current_time[6])
+
+        # Read the existing timers from the JSON file
+        with open('devicetimer.json', 'r') as file:
+            timers = json.load(file)
+
+        # Check if timers is a list
+        if isinstance(timers, list):
+            for timer in timers:
+                # Check if the timer matches the current day and time
+                if timer['dayOfWeek'] == day_name and timer['time'] == "{:02}:{:02}".format(current_time[3], current_time[4]):
+                    # Toggle the button based on the device
+                    if timer['device'] == 'Water Pump':
+                        toggle_button(waterpump14, 1 if timer['state'] == 'on' else 0)
+                    elif timer['device'] == 'Humidity Sensor':
+                        toggle_button(humidity15, 1 if timer['state'] == 'on' else 0)
+                    elif timer['device'] == 'LED test':
+                        toggle_button(led16, 1 if timer['state'] == 'on' else 0)
+
+    except Exception as e:
+        print("Exception during timer check:", str(e))
+# ============================================================================ 
 
 @WebRoute(GET, '/waterpumpon')
 def _httpHandlerLedOnGet(microWebSrv2, request):
@@ -232,14 +308,14 @@ MicroWebSrv2.AddDefaultPage('overview.html')
 
 # ------------------------------------------------------------------------
 
-
+# To get the amount of memory currently allocated
+allocated_memory = gc.mem_alloc()
+print("Allocated Memory:", allocated_memory, "bytes")
 # Instanciates the MicroWebSrv2 class,
 mws2 = MicroWebSrv2()
 
-# SSL is not correctly supported on MicroPython.
-# But you can uncomment the following for standard Python.
-#mws2.EnableSSL( certFile = 'SSL-Cert/openhc2.crt',
- #               keyFile  = 'SSL-Cert/openhc2.key' )
+# Call the function to print the current time
+print_current_time()
 
 # For embedded MicroPython, use a very light configuration,
 mws2.SetEmbeddedConfig() # very minimal setting
@@ -251,3 +327,19 @@ mws2.NotFoundURL = '/overview.html'
 mws2.StartManaged()
 
 
+# Main program loop until keyboard interrupt,
+try :
+    while mws2.IsRunning :
+        sleep(30)
+        print_current_time()
+        toggle_buttons_based_on_timer()
+
+except KeyboardInterrupt :
+    pass
+
+# End,
+print()
+mws2.Stop()
+print('Bye')
+gc.collect()
+print()
